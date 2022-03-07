@@ -51,7 +51,7 @@ void ecall_nativeMatMul(float* w, int* dimW, float* inp, int* dimInp, float* out
     int inp_rows = dimInp[0];
     int inp_cols = dimInp[1];
     float* inp_cpy = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
-    memcpy(inp_cpy, sizeof(float) * inp_rows * inp_cols);
+    memcpy(inp_cpy, inp, sizeof(float) * inp_rows * inp_cols);
 
     // Perform matrix multiplication
     float* res = (float*) malloc(sizeof(float) * w_rows * inp_cols);
@@ -79,6 +79,7 @@ void ecall_precompute(float* weight, int* dim, int batch) {
     int weight_rows = dim[0];
     int weight_cols = dim[1];
     float* weight_cpy = (float*) malloc(sizeof(float) * weight_rows * weight_cols);
+    memcpy(weight_cpy, weight, sizeof(float) * weight_rows * weight_cols)
     // Generate random numbers in r
     if (r != nullptr) {
         free(r);
@@ -109,6 +110,7 @@ void ecall_addNoise(float* inp, int* dim, float* out) {
     int inp_rows = dim[0];
     int inp_cols = dim[1];
     float* inp_cpy = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
+    memcpy(inp_cpy, inp, sizeof(float) * inp_rows * inp_cols);
 
     // Perform matrix addition
     float* res = (float*) malloc(sizeof(float) * inp_rows * inp_cols)
@@ -128,7 +130,8 @@ void ecall_removeNoise(float* inp, int* dim, float* out) {
     int inp_rows = dim[0];
     int inp_cols = dim[1];
     float* inp_cpy = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
-
+    memcpy(inp_cpy, inp, sizeof(float) * inp_rows * inp_cols);
+    
     // Perform matrix substraction
     float* res = (float*) malloc(sizeof(float) * inp_rows * inp_cols)
     for (int i = 0; i < inp_rows; i++) {
