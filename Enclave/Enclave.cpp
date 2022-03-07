@@ -86,7 +86,7 @@ void ecall_precompute(float* weight, int* dim, int batch) {
         free(r);
     }
     r = (float*) malloc(sizeof(float) * batch * weight_rows);
-    sgx_read_rand(r, sizeof(float) * batch * weight_rows);
+    sgx_read_rand((unsigned char*) r, sizeof(float) * batch * weight_rows);
 
     // Perform matrix multiplication
     if (w_pre != nullptr) {
@@ -96,7 +96,7 @@ void ecall_precompute(float* weight, int* dim, int batch) {
     for (int i = 0; i < batch; i++) {
         for (int j = 0; j < weight_cols; j++) {
             for (int k = 0; k < weight_rows; k++) {
-                res[i*batch + j] += r[i*batch + k] * weight_cpy[k*weight_rows + j];
+                w_pre[i*batch + j] += r[i*batch + k] * weight_cpy[k*weight_rows + j];
             }
         }
     }
@@ -114,7 +114,7 @@ void ecall_addNoise(float* inp, int* dim, float* out) {
     memcpy(inp_cpy, inp, sizeof(float) * inp_rows * inp_cols);
 
     // Perform matrix addition
-    float* res = (float*) malloc(sizeof(float) * inp_rows * inp_cols)
+    float* res = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
     for (int i = 0; i < inp_rows; i++) {
         for (int j = 0; j < inp_cols; j++) {
             res[i*inp_rows + j] = inp_cpy[i*inp_rows + j] + r[i*inp_rows + j];
@@ -134,7 +134,7 @@ void ecall_removeNoise(float* inp, int* dim, float* out) {
     memcpy(inp_cpy, inp, sizeof(float) * inp_rows * inp_cols);
 
     // Perform matrix substraction
-    float* res = (float*) malloc(sizeof(float) * inp_rows * inp_cols)
+    float* res = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
     for (int i = 0; i < inp_rows; i++) {
         for (int j = 0; j < inp_cols; j++) {
             res[i*inp_rows + j] = inp_cpy[i*inp_rows + j] - w_pre[i*inp_rows * j];
