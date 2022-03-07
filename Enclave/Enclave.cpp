@@ -58,7 +58,7 @@ void ecall_nativeMatMul(float* w, int* dimW, float* inp, int* dimInp, float* out
     for (int i = 0; i < w_rows; i++) {
         for (int j = 0; j < inp_cols; j++) {
             for (int k = 0; k < w_cols; k++) {
-                res[i][j] += w_cpy[i][k] * inp_cpy[k][j];
+                res[i*w_rows + j] += w_cpy[i*w_rows + k] * inp_cpy[k*inp_rows + j];
             }
         }
     }
@@ -95,7 +95,7 @@ void ecall_precompute(float* weight, int* dim, int batch) {
     for (int i = 0; i < batch; i++) {
         for (int j = 0; j < weight_cols; j++) {
             for (int k = 0; k < weight_rows; k++) {
-                res[i][j] += r[i][k] * weight_cpy[k][j];
+                res[i*batch + j] += r[i*batch + k] * weight_cpy[k*weight_rows + j];
             }
         }
     }
@@ -116,7 +116,7 @@ void ecall_addNoise(float* inp, int* dim, float* out) {
     float* res = (float*) malloc(sizeof(float) * inp_rows * inp_cols)
     for (int i = 0; i < inp_rows; i++) {
         for (int j = 0; j < inp_cols; j++) {
-            res[i][j] = inp_cpy[i][j] + r[i][j];
+            res[i*inp_rows + j] = inp_cpy[i*inp_rows + j] + r[i*inp_rows + j];
         }
     }
     memcpy(out, res, sizeof(float) * inp_rows * inp_cols);
@@ -136,7 +136,7 @@ void ecall_removeNoise(float* inp, int* dim, float* out) {
     float* res = (float*) malloc(sizeof(float) * inp_rows * inp_cols)
     for (int i = 0; i < inp_rows; i++) {
         for (int j = 0; j < inp_cols; j++) {
-            res[i][j] = inp_cpy[i][j] - w_pre[i][j];
+            res[i*inp_rows + j] = inp_cpy[i*inp_rows + j] - w_pre[i*inp_rows * j];
         }
     }
     memcpy(out, res, sizeof(float) * inp_rows * inp_cols);
