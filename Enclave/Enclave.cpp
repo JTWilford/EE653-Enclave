@@ -35,3 +35,107 @@ int ecall_compute_secrete_operation(int* inp, int size) {
     printf("Returning to App.cpp\n");
     return res;
 }
+
+// Computes w * inp, and writes the data into buffer out
+// float* w => 2d array of weights
+// int* dimW => 2-element array defining the size of w
+// float* inp => 2d array representing input vector
+// int* dimInp => 2-element array defining the size of inp
+// float* out => Output buffer
+void ecall_nativeMatMul(float* w, int* dimW, float* inp, int* dimInp, float* out) {
+    // Copy the W array out of untrusted memory
+    int w_rows = dimW[0];
+    int w_cols = dimW[1];
+    float* w_cpy = (float*) malloc(sizeof(float) * w_rows * w_cols);
+    memcpy(w_cpy, w, sizeof(float) * w_rows * w_cols);
+    int inp_rows = dimInp[0];
+    int inp_cols = dimInp[1];
+    float* inp_cpy = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
+    memcpy(inp_cpy, sizeof(float) * inp_rows * inp_cols);
+
+    // Perform matrix multiplication
+    float* res = (float*) malloc(sizeof(float) * w_rows * inp_cols);
+    for (int i = 0; i < w_rows; i++) {
+        for (int j = 0; j < inp_cols; j++) {
+            for (int k = 0; k < w_cols) {
+                res[i][j] += w_cpy[i][k] * inp_cpy[k][j];
+            }
+        }
+    }
+    // Copy the result into the output buffer
+    memcpy(out, res, sizeof(float) * w_rows * inp_cols);
+    free(res);
+}
+
+// Generate an array of random floats r, then compute r * weight
+// The results of this operation are stored inside the enclave
+// float* weight => 2d array of Weights
+// int* dim => 2-element array defining the size of weight
+// int batch => ???
+float* r = nullptr;
+float* w_pre = nullptr;
+void ecall_precompute(float* weight, int* dim, int batch) {
+    // Copy weight out of untrusted memory
+    int weight_rows = dim[0];
+    int weight_cols = dim[1];
+    float* weight_cpy = (float*) malloc(sizeof(float) * weight_rows * weight_cols);
+    // Generate random numbers in r
+    if (r != nullptr) {
+        free(r);
+    }
+    r = (float*) malloc(sizeof(float) * batch * weight_rows);
+    sgx_read_rand(r, sizeof(float) * batch * weight_rows);
+
+    // Perform matrix multiplication
+    if (w_pre != nullptr) {
+        free(w_pre);
+    }
+    w_pre = (float*) malloc(sizeof(float) * batch * weight_cols);
+    for (int i = 0; i < batch; i++) {
+        for (int j = 0; j < weight_cols; j++) {
+            for (int k = 0; k < weight_rows) {
+                res[i][j] += r[i][k] * weight_cpy[k][j];
+            }
+        }
+    }
+    // TODO: Need to store res in enclave somehow
+    // Maybe done by global pointers?
+}
+
+// Computes inp + r, where r is a random buffer that was populated
+// by ecall_precompute
+void ecall_addNoise(float* inp, int* dim, float* out) {
+    // Copy input out of untrusted memory
+    int inp_rows = dim[0];
+    int inp_cols = dim[1];
+    float* inp_cpy = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
+
+    // Perform matrix addition
+    float* res = (float*) malloc(sizeof(float) * inp_rows * inp_cols)
+    for (int i = 0; i < inp_rows; i++) {
+        for (int j = 0; j < inp_cols; j++) {
+            res[i][j] = inp_cpy[i][j] + r[i][j];
+        }
+    }
+    memcpy(out, res, sizeof(float) * inp_rows * inp_cols);
+    free(res);
+}
+
+// Computes inp - (r * w). r * w has been precomputed by ecall_precompute
+
+void ecall_removeNoise(float* inp, int* dim, float* out) {
+    // Copy input out of untrusted memory
+    int inp_rows = dim[0];
+    int inp_cols = dim[1];
+    float* inp_cpy = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
+
+    // Perform matrix substraction
+    float* res = (float*) malloc(sizeof(float) * inp_rows * inp_cols)
+    for (int i = 0; i < inp_rows; i++) {
+        for (int j = 0; j < inp_cols; j++) {
+            res[i][j] = inp_cpy[i][j] - w_pre[i][j];
+        }
+    }
+    memcpy(out, res, sizeof(float) * inp_rows * inp_cols);
+    free(res);
+}
