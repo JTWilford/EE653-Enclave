@@ -57,7 +57,7 @@ void ecall_nativeMatMul(float* w, int* dimW, float* inp, int* dimInp, float* out
     float* res = (float*) malloc(sizeof(float) * w_rows * inp_cols);
     for (int i = 0; i < w_rows; i++) {
         for (int j = 0; j < inp_cols; j++) {
-            for (int k = 0; k < w_cols) {
+            for (int k = 0; k < w_cols; k++) {
                 res[i][j] += w_cpy[i][k] * inp_cpy[k][j];
             }
         }
@@ -94,7 +94,7 @@ void ecall_precompute(float* weight, int* dim, int batch) {
     w_pre = (float*) malloc(sizeof(float) * batch * weight_cols);
     for (int i = 0; i < batch; i++) {
         for (int j = 0; j < weight_cols; j++) {
-            for (int k = 0; k < weight_rows) {
+            for (int k = 0; k < weight_rows; k++) {
                 res[i][j] += r[i][k] * weight_cpy[k][j];
             }
         }
@@ -131,7 +131,7 @@ void ecall_removeNoise(float* inp, int* dim, float* out) {
     int inp_cols = dim[1];
     float* inp_cpy = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
     memcpy(inp_cpy, inp, sizeof(float) * inp_rows * inp_cols);
-    
+
     // Perform matrix substraction
     float* res = (float*) malloc(sizeof(float) * inp_rows * inp_cols)
     for (int i = 0; i < inp_rows; i++) {
