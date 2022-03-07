@@ -3,6 +3,7 @@
 #include <stdio.h> /* vsnprintf */
 #include <string.h>
 #include <algorithm>    // std::max
+#include <sgx_trts.h>
 
 
 int printf(const char* fmt, ...)
@@ -79,7 +80,7 @@ void ecall_precompute(float* weight, int* dim, int batch) {
     int weight_rows = dim[0];
     int weight_cols = dim[1];
     float* weight_cpy = (float*) malloc(sizeof(float) * weight_rows * weight_cols);
-    memcpy(weight_cpy, weight, sizeof(float) * weight_rows * weight_cols)
+    memcpy(weight_cpy, weight, sizeof(float) * weight_rows * weight_cols);
     // Generate random numbers in r
     if (r != nullptr) {
         free(r);
