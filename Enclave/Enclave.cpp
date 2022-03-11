@@ -129,7 +129,7 @@ void ecall_precompute(float *weight, int *dim, int batch) {
     float *weight_cpy = (float*) malloc(sizeof(float) * weight_cols * weight_rows);
     memcpy(weight_cpy, weight, sizeof(float) * weight_rows * weight_cols);
     printf("Weight (%dx%d):", weight_cols, weight_rows);
-    print_mat(res, weight_rows, weight_cols);
+    print_mat(weight_cpy, weight_rows, weight_cols);
     // Generate random numbers in r
     if (r != nullptr) {
         free(r);
@@ -137,7 +137,7 @@ void ecall_precompute(float *weight, int *dim, int batch) {
     r = (float*) malloc(sizeof(float) * weight_rows * batch);
     read_rand(r, sizeof(float) * weight_rows * batch);
     printf("R (%dx%d):", weight_rows, batch);
-    print_mat(res, batch, weight_rows);
+    print_mat(r, batch, weight_rows);
 
     // Perform matrix multiplication
     if (w_pre != nullptr) {
