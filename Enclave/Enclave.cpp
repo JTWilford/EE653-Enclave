@@ -12,6 +12,7 @@ int printf(const char* fmt, ...)
     va_list ap;
     va_start(ap, fmt);
     vsnprintf(buf, BUFSIZ, fmt, ap);
+    fflush(stdout);
     va_end(ap);
     ocall_print_string(buf);
     return (int)strnlen(buf, BUFSIZ - 1) + 1;
@@ -122,8 +123,7 @@ void ecall_precompute(float *weight, int *dim, int batch) {
 // by ecall_precompute
 void ecall_addNoise(float *inp, int *dim, float *out) {
     printf("addNoise\n");
-    printf(dim);
-    printf("\n");
+    printf("%x", dim);
     // Copy input out of untrusted memory
     int inp_rows = dim[0];
     printf("1.1\n");
