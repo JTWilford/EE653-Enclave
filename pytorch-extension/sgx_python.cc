@@ -63,8 +63,8 @@ torch::Tensor nativeMatMul(torch::Tensor w, torch::Tensor inp) {
     matMul_t func = (matMul_t) dlsym(lib_, "nativeMatMul");
 
     // This looks backwards. We compute W * inp, but this is the size of inp * W
-    // auto res = torch::ones({inp.size(0), w.size(1)});
-    auto res = torch::ones({w.size(0), inp.size(1)});
+    auto res = torch::ones({inp.size(0), w.size(1)});
+    // auto res = torch::ones({w.size(0), inp.size(1)});
 
     int* dimW = new int[2];
     dimW[0] = w.size(0);
