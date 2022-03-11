@@ -5,8 +5,11 @@ from python.sgxutils import SGXUtils
 def main(args):
     sgxutils = SGXUtils()
 
+    # For whatever reason, Weights is Row-Major and X is Column-Major. This is stupid.
+
     l = torch.nn.Linear(args.in_features, args.out_features, bias=False).cuda()
-    x = torch.randn(args.in_features, args.batch).cuda()
+    x = torch.randn(args.batch, args.in_features).cuda()
+    x_t = torch.transpose(x, 0, 1)
 
     print("Weights:")
     print(l.weight)
@@ -18,7 +21,7 @@ def main(args):
     sgxutils.precompute(l.weight, args.batch)
 
     # x_blinded = x + r
-    x_blinded = sgxutils.addNoise(x)
+    x_blinded = sgxutils.addNoise(x_t)
     print("x_blinded:")
     print(x_blinded)
 
