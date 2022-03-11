@@ -122,6 +122,8 @@ void ecall_precompute(float *weight, int *dim, int batch) {
 // by ecall_precompute
 void ecall_addNoise(float *inp, int *dim, float *out) {
     printf("addNoise\n");
+    printf(dim);
+    printf("\n");
     // Copy input out of untrusted memory
     int inp_rows = dim[0];
     printf("1.1\n");
