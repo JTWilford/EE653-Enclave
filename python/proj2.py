@@ -6,7 +6,7 @@ def main(args):
     sgxutils = SGXUtils()
 
     l = torch.nn.Linear(args.in_features, args.out_features, bias=False).cuda()
-    x = torch.randn(args.batch, args.in_features).cuda()
+    x = torch.randn(args.in_features, args.batch).cuda()
 
     print("Weights:")
     print(l.weight)
