@@ -110,12 +110,12 @@ int ecall_compute_secrete_operation(int *inp, int size) {
 void ecall_nativeMatMul(float *w, int *dimW, float *inp, int *dimInp, float *out) {
     printf("nativeMatMul\n");
     // Copy the W array out of untrusted memory
-    int w_rows = dimW[1];
-    int w_cols = dimW[0];
+    int w_rows = dimW[0];
+    int w_cols = dimW[1];
     float *w_cpy = (float*) malloc(sizeof(float) * w_rows * w_cols);
     memcpy(w_cpy, w, sizeof(float) * w_rows * w_cols);
-    int inp_rows = dimInp[1];
-    int inp_cols = dimInp[0];
+    int inp_rows = dimInp[0];
+    int inp_cols = dimInp[1];
     float *inp_cpy = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
     memcpy(inp_cpy, inp, sizeof(float) * inp_rows * inp_cols);
 
@@ -124,7 +124,7 @@ void ecall_nativeMatMul(float *w, int *dimW, float *inp, int *dimInp, float *out
     matrix_mult(w, w_rows, w_cols, inp, inp_rows, inp_cols, out);
     printf("\n");
     // Copy the result into the output buffer
-    memcpy(out, res, sizeof(float) * w_rows * inp_cols);
+    memcpy(out, res, sizeof(float) * w_cols * inp_rows);
     free(res);
 }
 
@@ -138,8 +138,8 @@ float *w_pre = nullptr;
 void ecall_precompute(float *weight, int *dim, int batch) {
     printf("precompute\n");
     // Copy weight out of untrusted memory
-    int weight_rows = dim[1];
-    int weight_cols = dim[0];
+    int weight_rows = dim[0];
+    int weight_cols = dim[1];
     float *weight_cpy = (float*) malloc(sizeof(float) * weight_rows * weight_cols);
     memcpy(weight_cpy, weight, sizeof(float) * weight_rows * weight_cols);
     // Generate random numbers in r
@@ -163,8 +163,8 @@ void ecall_addNoise(float *inp, int *dim, float *out) {
     printf("addNoise\n");
     printf("%x", dim);
     // Copy input out of untrusted memory
-    int inp_rows = dim[1];
-    int inp_cols = dim[0];
+    int inp_rows = dim[0];
+    int inp_cols = dim[1];
     float *inp_cpy = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
     memcpy(inp_cpy, inp, sizeof(float) * inp_rows * inp_cols);
 
@@ -180,8 +180,8 @@ void ecall_addNoise(float *inp, int *dim, float *out) {
 void ecall_removeNoise(float *inp, int *dim, float *out) {
     printf("removeNoise\n");
     // Copy input out of untrusted memory
-    int inp_rows = dim[1];
-    int inp_cols = dim[0];
+    int inp_rows = dim[0];
+    int inp_cols = dim[1];
     float *inp_cpy = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
     memcpy(inp_cpy, inp, sizeof(float) * inp_rows * inp_cols);
 
