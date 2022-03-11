@@ -23,10 +23,10 @@ void read_rand(float *r, int totalSize) {
     }
 }
 
-void print_mat(float* a, a_rows, a_cols) {
+void print_mat(float* a, int a_rows, int a_cols) {
     for (int i = 0; i < a_rows; i++) {
         for (int j = 0; j < a_cols; j++) {
-            printf("%f, ", out[a_rows*j + i]);
+            printf("%f, ", a[a_rows*j + i]);
         }
         printf("\n");
     }
