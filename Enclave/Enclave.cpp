@@ -124,6 +124,7 @@ void ecall_addNoise(float *inp, int *dim, float *out) {
     printf("addNoise\n");
     // Copy input out of untrusted memory
     int inp_rows = dim[0];
+    printf("1.1\n");
     int inp_cols = dim[1];
     printf("1\n");
     float *inp_cpy = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
