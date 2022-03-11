@@ -9,7 +9,7 @@ def main(args):
 
     l = torch.nn.Linear(args.in_features, args.out_features, bias=False).cuda()
     x = torch.randn(args.batch, args.in_features).cuda()
-    l_t = torch.transpose(l, 0, 1)
+    w_t = torch.transpose(l.weight, 0, 1)
 
     print("Weights:")
     print(l_t.weight)
@@ -18,7 +18,7 @@ def main(args):
 
 
     # given the weight; precompute w * r
-    sgxutils.precompute(l_t.weight, args.batch)
+    sgxutils.precompute(w_t, args.batch)
 
     # x_blinded = x + r
     x_blinded = sgxutils.addNoise(x)
@@ -34,7 +34,7 @@ def main(args):
     y_recovered = sgxutils.removeNoise(y_blinded)
     print("y_recovered:")
     print(y_recovered)
-    s = sgxutils.nativeMatMul(l.weight, x)
+    s = sgxutils.nativeMatMul(w_t, x)
     print("s")
     print(s)
 
