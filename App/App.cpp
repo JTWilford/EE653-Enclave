@@ -237,6 +237,7 @@ void ocall_print_string(const char *str)
      * the input string to prevent buffer overflow. 
      */
     printf("%s", str);
+    fflush(stdout);
 }
 
 
