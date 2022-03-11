@@ -90,6 +90,7 @@ void ecall_precompute(float *weight, int *dim, int batch) {
     float *weight_cpy = (float*) malloc(sizeof(float) * weight_rows * weight_cols);
     printf("1\n");
     memcpy(weight_cpy, weight, sizeof(float) * weight_rows * weight_cols);
+    printf("1.1\n");
     // Generate random numbers in r
     if (r != nullptr) {
         free(r);
