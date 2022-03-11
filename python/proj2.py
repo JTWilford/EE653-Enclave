@@ -12,7 +12,7 @@ def main(args):
     w_t = torch.transpose(l.weight, 0, 1)
 
     print("Weights:")
-    print(w_t.weight)
+    print(w_t)
     print("X:")
     print(x)
 
