@@ -138,7 +138,6 @@ void ecall_addNoise(float *inp, int *dim, float *out) {
     printf("4\n");
     for (int i = 0; i < inp_rows; i++) {
         for (int j = 0; j < inp_cols; j++) {
-            printf("for: %d", i*inp_rows)
             res[i*inp_cols + j] = inp_cpy[i*inp_cols + j] + r[i*inp_cols + j];
         }
     }
