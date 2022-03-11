@@ -37,10 +37,10 @@ void matrix_mult(float *a, int a_rows, int a_cols, float *b, int b_rows, int b_c
     printf("Dims: a=%dx%d, b=%dx%d, out=%dx%d\n", a_cols, a_rows, b_cols, b_rows, b_cols, a_rows);
     for (int i = 0; i < a_rows; i++) {
         for (int j = 0; j < b_cols; j++) {
-            out[a_rows*j + i] = 0.0f;
+            out[a_cols*i + j] = 0.0f;
             for (int k = 0; k < a_cols; k++) {
                 // printf("%d = %d * %d\n", i * inp_cols + j, i * w_cols + k, k * inp_cols + j);
-                out[a_rows*j + i] += a[a_rows*k + i] * b[b_rows*j + k];
+                out[a_cols*i + j] += a[a_cols*i + k] * b[b_cols*k + j];
             }
         }
     }
@@ -49,14 +49,14 @@ void matrix_mult(float *a, int a_rows, int a_cols, float *b, int b_rows, int b_c
 void matrix_add(float *a, int a_rows, int a_cols, float *b, float *out) {
     for (int i = 0; i < a_rows; i++) {
         for (int j = 0; j < a_cols; j++) {
-            out[a_rows*j + i] = a[a_rows*j + i] + b[a_rows*j + i];
+            out[a_cols*i + j] = a[a_cols*i + j] + b[a_cols*i + j];
         }
     }
 }
 void matrix_sub(float *a, int a_rows, int a_cols, float *b, float *out) {
     for (int i = 0; i < a_rows; i++) {
         for (int j = 0; j < a_cols; j++) {
-            out[a_rows*j + i] = a[a_rows*j + i] - b[a_rows*j + i];
+            out[a_cols*i + j] = a[a_cols*i + j] - b[a_cols*i + j];
         }
     }
 }
