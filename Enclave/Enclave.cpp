@@ -65,6 +65,7 @@ void ecall_nativeMatMul(float *w, int *dimW, float *inp, int *dimInp, float *out
     float *res = (float*) malloc(sizeof(float) * w_rows * inp_cols);
     printf("Dims: w=%dx%d, i=%dx%d, r=%dx%d\n", w_rows, w_cols, inp_rows, inp_cols, w_rows, inp_cols);
     for (int i = 0; i < w_rows; i++) {
+        printf("i=%d", i);
         for (int j = 0; j < inp_cols; j++) {
             for (int k = 0; k < w_cols; k++) {
                 // printf("%d = %d * %d\n", i * inp_cols + j, i * w_cols + k, k * inp_cols + j);
