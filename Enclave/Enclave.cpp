@@ -36,17 +36,17 @@ void matrix_mult(float *a, int a_rows, int a_cols, float *b, int b_rows, int b_c
     }
 }
 
-void matrix_add(float *a, int a_rows, int a_cols, float *b, int b_rows, int b_cols, float *out) {
+void matrix_add(float *a, int a_rows, int a_cols, float *b, float *out) {
     for (int i = 0; i < a_cols; i++) {
         for (int j = 0; j < a_rows; j++) {
-            out[i*a_rows + j] = a[i*a_rows + j] + b[i*b_rows + j];
+            out[i*a_rows + j] = a[i*a_rows + j] + b[i*a_rows + j];
         }
     }
 }
-void matrix_sub(float *a, int a_rows, int a_cols, float *b, int b_rows, int b_cols, float *out) {
+void matrix_sub(float *a, int a_rows, int a_cols, float *b, float *out) {
     for (int i = 0; i < a_cols; i++) {
         for (int j = 0; j < a_rows; j++) {
-            out[i*a_rows + j] = a[i*a_rows + j] - b[i*b_rows + j];
+            out[i*a_rows + j] = a[i*a_rows + j] - b[i*a_rows + j];
         }
     }
 }
@@ -124,13 +124,7 @@ void ecall_precompute(float *weight, int *dim, int batch) {
         free(w_pre);
     }
     w_pre = (float*) malloc(sizeof(float) * batch * weight_cols);
-    for (int i = 0; i < batch; i++) {
-        for (int j = 0; j < weight_cols; j++) {
-            for (int k = 0; k < weight_rows; k++) {
-                w_pre[i*weight_cols + j] += r[i*weight_rows + k] * weight_cpy[k*weight_cols + j];
-            }
-        }
-    }
+    matrix_mult(r, batch, weight_rows, weight_cpy, weight_rows, weight_cols, w_pre);
 }
 
 // Computes inp + r, where r is a random buffer that was populated
@@ -146,7 +140,7 @@ void ecall_addNoise(float *inp, int *dim, float *out) {
 
     // Perform matrix addition
     float *res = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
-    matrix_add(inp, inp_rows, inp_cols, r, inp_rows, inp_cols, out);
+    matrix_add(inp, inp_rows, inp_cols, r, out);
     memcpy(out, res, sizeof(float) * inp_rows * inp_cols);
     free(res);
 }
@@ -162,7 +156,8 @@ void ecall_removeNoise(float *inp, int *dim, float *out) {
     memcpy(inp_cpy, inp, sizeof(float) * inp_rows * inp_cols);
 
     // Perform matrix substraction
-    matrix_sub(inp, inp_rows, inp_cols, w_pre, inp_rows, inp_cols, out);
+    float *res = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
+    matrix_sub(inp, inp_rows, inp_cols, w_pre, out);
     memcpy(out, res, sizeof(float) * inp_rows * inp_cols);
     free(res);
 }
