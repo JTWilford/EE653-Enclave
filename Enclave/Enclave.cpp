@@ -96,7 +96,7 @@ void ecall_precompute(float *weight, int *dim, int batch) {
     }
     r = (float*) malloc(sizeof(float) * batch * weight_rows);
     printf("2\n");
-    read_rand((unsigned char*) r, sizeof(float) * batch * weight_rows);
+    read_rand(r, sizeof(float) * batch * weight_rows);
     printf("3\n");
 
     // Perform matrix multiplication
