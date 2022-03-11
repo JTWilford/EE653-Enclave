@@ -125,18 +125,25 @@ void ecall_addNoise(float *inp, int *dim, float *out) {
     // Copy input out of untrusted memory
     int inp_rows = dim[0];
     int inp_cols = dim[1];
+    printf("1\n");
     float *inp_cpy = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
+    printf("2\n");
     memcpy(inp_cpy, inp, sizeof(float) * inp_rows * inp_cols);
+    printf("3\n");
 
     // Perform matrix addition
     float *res = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
+    printf("4\n");
     for (int i = 0; i < inp_rows; i++) {
         for (int j = 0; j < inp_cols; j++) {
             res[i*inp_rows + j] = inp_cpy[i*inp_rows + j] + r[i*inp_rows + j];
         }
     }
+    printf("5\n");
     memcpy(out, res, sizeof(float) * inp_rows * inp_cols);
+    printf("6\n");
     free(res);
+    printf("7\n");
 }
 
 // Computes inp - (r * w). r * w has been precomputed by ecall_precompute
