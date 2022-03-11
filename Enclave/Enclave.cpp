@@ -23,63 +23,34 @@ void read_rand(float *r, int totalSize) {
     }
 }
 
-// Row Major
+// column Major
 void matrix_mult(float *a, int a_rows, int a_cols, float *b, int b_rows, int b_cols, float *out) {
-    printf("Dims: a=%dx%d, b=%dx%d, out=%dx%d\n", a_rows, a_cols, b_rows, b_cols, a_rows, b_cols);
+    printf("Dims: a=%dx%d, b=%dx%d, out=%dx%d\n", a_cols, a_rows, b_cols, b_rows, b_cols, a_rows);
     for (int i = 0; i < a_rows; i++) {
-        printf("i=%d\r", i);
         for (int j = 0; j < b_cols; j++) {
+            out[a_cols*j + i] = 0.0f;
             for (int k = 0; k < a_cols; k++) {
                 // printf("%d = %d * %d\n", i * inp_cols + j, i * w_cols + k, k * inp_cols + j);
-                out[a_cols*i + j] += a[a_cols*i + k] * b[b_cols*k + j];
+                out[a_rows*j + i] += a[a_rows*k + i] * b[b_rows*j + k];
             }
         }
     }
 }
 
 void matrix_add(float *a, int a_rows, int a_cols, float *b, float *out) {
-    for (int i = 0; i < a_cols; i++) {
-        for (int j = 0; j < a_rows; j++) {
-            out[a_cols*i + j] = a[a_cols*i + j] + b[a_cols*i + j];
+    for (int i = 0; i < a_rows; i++) {
+        for (int j = 0; j < a_cols; j++) {
+            out[a_rows*j + i] = a[a_rows*j + i] + b[a_rows*j + i];
         }
     }
 }
 void matrix_sub(float *a, int a_rows, int a_cols, float *b, float *out) {
     for (int i = 0; i < a_rows; i++) {
-        for (int j = 0; j < a_rows; j++) {
-            out[a_cols*i + j] = a[a_cols*i + j] - b[a_cols*i + j];
+        for (int j = 0; j < a_cols; j++) {
+            out[a_rows*j + i] = a[a_rows*j + i] - b[a_rows*j + i];
         }
     }
 }
-
-// Column Major
-// void matrix_mult(float *a, int a_rows, int a_cols, float *b, int b_rows, int b_cols, float *out) {
-//     printf("Dims: a=%dx%d, b=%dx%d, out=%dx%d\n", a_rows, a_cols, b_rows, b_cols, a_rows, b_cols);
-//     for (int i = 0; i < a_rows; i++) {
-//         printf("i=%d\r", i);
-//         for (int j = 0; j < b_cols; j++) {
-//             for (int k = 0; k < a_cols; k++) {
-//                 // printf("%d = %d * %d\n", i * inp_cols + j, i * w_cols + k, k * inp_cols + j);
-//                 out[a_rows*j + i] += a[a_rows*k + i] * b[b_rows*j + k];
-//             }
-//         }
-//     }
-// }
-
-// void matrix_add(float *a, int a_rows, int a_cols, float *b, float *out) {
-//     for (int i = 0; i < a_cols; i++) {
-//         for (int j = 0; j < a_rows; j++) {
-//             out[a_rows*j + i] = a[a_rows*j + i] + b[a_rows*j + i];
-//         }
-//     }
-// }
-// void matrix_sub(float *a, int a_rows, int a_cols, float *b, float *out) {
-//     for (int i = 0; i < a_cols; i++) {
-//         for (int j = 0; j < a_rows; j++) {
-//             out[a_rows*j + i] = a[a_rows*j + i] - b[a_rows*j + i];
-//         }
-//     }
-// }
 
 
 // the actual buffer of *inp is in untrusted memory
@@ -110,21 +81,21 @@ int ecall_compute_secrete_operation(int *inp, int size) {
 void ecall_nativeMatMul(float *w, int *dimW, float *inp, int *dimInp, float *out) {
     printf("nativeMatMul\n");
     // Copy the W array out of untrusted memory
-    int w_rows = dimW[0];
-    int w_cols = dimW[1];
-    float *w_cpy = (float*) malloc(sizeof(float) * w_rows * w_cols);
-    memcpy(w_cpy, w, sizeof(float) * w_rows * w_cols);
-    int inp_rows = dimInp[0];
-    int inp_cols = dimInp[1];
-    float *inp_cpy = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
-    memcpy(inp_cpy, inp, sizeof(float) * inp_rows * inp_cols);
+    int w_cols = dimW[0];
+    int w_rows = dimW[1];
+    float *w_cpy = (float*) malloc(sizeof(float) * w_cols * w_rows);
+    memcpy(w_cpy, w, sizeof(float) * w_cols * w_rows);
+    int inp_cols = dimInp[0];
+    int inp_rows = dimInp[1];
+    float *inp_cpy = (float*) malloc(sizeof(float) * inp_cols * inp_rows);
+    memcpy(inp_cpy, inp, sizeof(float) * inp_cols * inp_rows);
 
     // Perform matrix multiplication
-    float *res = (float*) malloc(sizeof(float) * w_rows * inp_cols);
+    float *res = (float*) malloc(sizeof(float) * inp_cols * w_rows);
     matrix_mult(w, w_rows, w_cols, inp, inp_rows, inp_cols, out);
     printf("\n");
     // Copy the result into the output buffer
-    memcpy(out, res, sizeof(float) * w_cols * inp_rows);
+    memcpy(out, res, sizeof(float) * inp_cols * w_rows);
     free(res);
 }
 
@@ -138,22 +109,22 @@ float *w_pre = nullptr;
 void ecall_precompute(float *weight, int *dim, int batch) {
     printf("precompute\n");
     // Copy weight out of untrusted memory
-    int weight_rows = dim[0];
-    int weight_cols = dim[1];
-    float *weight_cpy = (float*) malloc(sizeof(float) * weight_rows * weight_cols);
+    int weight_cols = dim[0];
+    int weight_rows = dim[1];
+    float *weight_cpy = (float*) malloc(sizeof(float) * weight_cols * weight_rows);
     memcpy(weight_cpy, weight, sizeof(float) * weight_rows * weight_cols);
     // Generate random numbers in r
     if (r != nullptr) {
         free(r);
     }
-    r = (float*) malloc(sizeof(float) * batch * weight_rows);
-    read_rand(r, sizeof(float) * batch * weight_rows);
+    r = (float*) malloc(sizeof(float) * weight_rows * batch);
+    read_rand(r, sizeof(float) * weight_rows * batch);
 
     // Perform matrix multiplication
     if (w_pre != nullptr) {
         free(w_pre);
     }
-    w_pre = (float*) malloc(sizeof(float) * batch * weight_cols);
+    w_pre = (float*) malloc(sizeof(float) * weight_cols * batch);
     matrix_mult(r, batch, weight_rows, weight_cpy, weight_rows, weight_cols, w_pre);
 }
 
@@ -163,15 +134,15 @@ void ecall_addNoise(float *inp, int *dim, float *out) {
     printf("addNoise\n");
     printf("%x", dim);
     // Copy input out of untrusted memory
-    int inp_rows = dim[0];
-    int inp_cols = dim[1];
-    float *inp_cpy = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
-    memcpy(inp_cpy, inp, sizeof(float) * inp_rows * inp_cols);
+    int inp_cols = dim[0];
+    int inp_rows = dim[1];
+    float *inp_cpy = (float*) malloc(sizeof(float) * inp_cols * inp_rows);
+    memcpy(inp_cpy, inp, sizeof(float) * inp_cols * inp_rows);
 
     // Perform matrix addition
-    float *res = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
+    float *res = (float*) malloc(sizeof(float) * inp_cols * inp_rows);
     matrix_add(inp, inp_rows, inp_cols, r, out);
-    memcpy(out, res, sizeof(float) * inp_rows * inp_cols);
+    memcpy(out, res, sizeof(float) * inp_cols * inp_rows);
     free(res);
 }
 
@@ -180,14 +151,14 @@ void ecall_addNoise(float *inp, int *dim, float *out) {
 void ecall_removeNoise(float *inp, int *dim, float *out) {
     printf("removeNoise\n");
     // Copy input out of untrusted memory
-    int inp_rows = dim[0];
-    int inp_cols = dim[1];
-    float *inp_cpy = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
-    memcpy(inp_cpy, inp, sizeof(float) * inp_rows * inp_cols);
+    int inp_cols = dim[0];
+    int inp_rows = dim[1];
+    float *inp_cpy = (float*) malloc(sizeof(float) * inp_cols * inp_rows);
+    memcpy(inp_cpy, inp, sizeof(float) * inp_cols * inp_rows);
 
     // Perform matrix substraction
-    float *res = (float*) malloc(sizeof(float) * inp_rows * inp_cols);
+    float *res = (float*) malloc(sizeof(float) * inp_cols * inp_rows);
     matrix_sub(inp, inp_rows, inp_cols, w_pre, out);
-    memcpy(out, res, sizeof(float) * inp_rows * inp_cols);
+    memcpy(out, res, sizeof(float) * inp_cols * inp_rows);
     free(res);
 }

@@ -62,9 +62,9 @@ torch::Tensor nativeMatMul(torch::Tensor w, torch::Tensor inp) {
     typedef void (* matMul_t) (float* w, int* dimW, float* inp, int* dimInp, float* out);
     matMul_t func = (matMul_t) dlsym(lib_, "nativeMatMul");
 
-    // This looks backwards. We compute W * inp, but this is the size of inp * W
     auto res = torch::ones({inp.size(0), w.size(1)});
-    // auto res = torch::ones({w.size(0), inp.size(1)});
+
+    std::cout << "Tensor: " << std::endl << res << std::endl;
 
     int* dimW = new int[2];
     dimW[0] = w.size(0);
@@ -74,7 +74,7 @@ torch::Tensor nativeMatMul(torch::Tensor w, torch::Tensor inp) {
     dimInp[0] = inp.size(0);
     dimInp[1] = inp.size(1);
 
-    func((float*) w.data_ptr(), dimW, (float*) inp.data_ptr(), dimInp, (float*) res.data_ptr());
+    func((float*) w.data_ptr(), dimW, (float*) inp.data_ptr(), dimInp, (float*) res.data_ptr<float>());
 
     delete [] dimInp;
     delete [] dimW;
