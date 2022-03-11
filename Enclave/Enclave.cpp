@@ -26,7 +26,7 @@ void read_rand(float *r, int totalSize) {
 void print_mat(float* a, int a_rows, int a_cols) {
     for (int i = 0; i < a_rows; i++) {
         for (int j = 0; j < a_cols; j++) {
-            printf("%f, ", a[a_rows*j + i]);
+            printf("%f, ", a[a_cols*i + j]);
         }
         printf("\n");
     }
@@ -128,7 +128,7 @@ void ecall_precompute(float *weight, int *dim, int batch) {
     int weight_rows = dim[1];
     float *weight_cpy = (float*) malloc(sizeof(float) * weight_cols * weight_rows);
     memcpy(weight_cpy, weight, sizeof(float) * weight_rows * weight_cols);
-    printf("Weight (%dx%d):", weight_cols, weight_rows);
+    printf("Weight (%dx%d):\n", weight_cols, weight_rows);
     print_mat(weight_cpy, weight_rows, weight_cols);
     // Generate random numbers in r
     if (r != nullptr) {
@@ -145,7 +145,7 @@ void ecall_precompute(float *weight, int *dim, int batch) {
     }
     w_pre = (float*) malloc(sizeof(float) * weight_cols * batch);
     matrix_mult(r, batch, weight_rows, weight_cpy, weight_rows, weight_cols, w_pre);
-    printf("W_pre (%dx%d):", weight_cols, batch);
+    printf("W_pre (%dx%d):\n", weight_cols, batch);
     print_mat(w_pre, batch, weight_cols);
 }
 
