@@ -104,8 +104,8 @@ void ecall_nativeMatMul(float *w, int *dimW, float *inp, int *dimInp, float *out
     print_mat(inp_cpy, inp_rows, inp_cols);
 
     // Perform matrix multiplication
-    float *res = (float*) malloc(sizeof(float) * w_cols * inp_rows);
-    matrix_mult(inp, inp_rows, inp_cols, w, w_rows, w_cols, out);
+    float *res = (float*) malloc(sizeof(float) * inp_cols * w_rows);
+    matrix_mult(w, w_rows, w_cols, inp, inp_rows, inp_cols, out);
     printf("\n");
     printf("Res (%dx%d):", w_cols, inp_rows);
     print_mat(res, inp_rows, w_cols);
@@ -143,7 +143,7 @@ void ecall_precompute(float *weight, int *dim, int batch) {
     if (w_pre != nullptr) {
         free(w_pre);
     }
-    w_pre = (float*) malloc(sizeof(float) * weight_cols * batch);
+    w_pre = (float*) malloc(sizeof(float) * batch * weight_);
     matrix_mult(r, batch, weight_rows, weight_cpy, weight_rows, weight_cols, w_pre);
     printf("W_pre (%dx%d):", weight_cols, batch);
     print_mat(w_pre, batch, weight_cols);
