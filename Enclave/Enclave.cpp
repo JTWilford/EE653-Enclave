@@ -44,6 +44,7 @@ int ecall_compute_secrete_operation(int* inp, int size) {
 // int* dimInp => 2-element array defining the size of inp
 // float* out => Output buffer
 void ecall_nativeMatMul(float* w, int* dimW, float* inp, int* dimInp, float* out) {
+    printf("nativeMatMul\n");
     // Copy the W array out of untrusted memory
     int w_rows = dimW[0];
     int w_cols = dimW[1];
@@ -76,23 +77,29 @@ void ecall_nativeMatMul(float* w, int* dimW, float* inp, int* dimInp, float* out
 float* r = nullptr;
 float* w_pre = nullptr;
 void ecall_precompute(float* weight, int* dim, int batch) {
+    printf("precompute\n");
     // Copy weight out of untrusted memory
     int weight_rows = dim[0];
     int weight_cols = dim[1];
     float* weight_cpy = (float*) malloc(sizeof(float) * weight_rows * weight_cols);
+    printf("1\n");
     memcpy(weight_cpy, weight, sizeof(float) * weight_rows * weight_cols);
     // Generate random numbers in r
     if (r != nullptr) {
         free(r);
     }
     r = (float*) malloc(sizeof(float) * batch * weight_rows);
+    printf("2\n");
     sgx_read_rand((unsigned char*) r, sizeof(float) * batch * weight_rows);
+    printf("3\n");
 
     // Perform matrix multiplication
     if (w_pre != nullptr) {
         free(w_pre);
     }
+    printf("4\n");
     w_pre = (float*) malloc(sizeof(float) * batch * weight_cols);
+    printf("5\n");
     for (int i = 0; i < batch; i++) {
         for (int j = 0; j < weight_cols; j++) {
             for (int k = 0; k < weight_rows; k++) {
@@ -100,6 +107,7 @@ void ecall_precompute(float* weight, int* dim, int batch) {
             }
         }
     }
+    printf("6\n");
     // TODO: Need to store res in enclave somehow
     // Maybe done by global pointers?
 }
@@ -107,6 +115,7 @@ void ecall_precompute(float* weight, int* dim, int batch) {
 // Computes inp + r, where r is a random buffer that was populated
 // by ecall_precompute
 void ecall_addNoise(float* inp, int* dim, float* out) {
+    printf("addNoise\n");
     // Copy input out of untrusted memory
     int inp_rows = dim[0];
     int inp_cols = dim[1];
@@ -127,6 +136,7 @@ void ecall_addNoise(float* inp, int* dim, float* out) {
 // Computes inp - (r * w). r * w has been precomputed by ecall_precompute
 
 void ecall_removeNoise(float* inp, int* dim, float* out) {
+    printf("removeNoise\n");
     // Copy input out of untrusted memory
     int inp_rows = dim[0];
     int inp_cols = dim[1];
