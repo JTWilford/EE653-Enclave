@@ -67,7 +67,7 @@ void ecall_nativeMatMul(float *w, int *dimW, float *inp, int *dimInp, float *out
     for (int i = 0; i < w_rows; i++) {
         for (int j = 0; j < inp_cols; j++) {
             for (int k = 0; k < w_cols; k++) {
-                printf("%d = %d * %d\n", i * inp_cols + j, i * w_cols + k, k * inp_cols + j);
+                // printf("%d = %d * %d\n", i * inp_cols + j, i * w_cols + k, k * inp_cols + j);
                 res[i*inp_cols + j] += w_cpy[i*w_cols + k] * inp_cpy[k*inp_cols + j];
             }
         }
