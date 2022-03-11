@@ -143,7 +143,7 @@ void ecall_precompute(float *weight, int *dim, int batch) {
     if (w_pre != nullptr) {
         free(w_pre);
     }
-    w_pre = (float*) malloc(sizeof(float) * batch * weight_);
+    w_pre = (float*) malloc(sizeof(float) * batch * weight_cols);
     matrix_mult(r, batch, weight_rows, weight_cpy, weight_rows, weight_cols, w_pre);
     printf("W_pre (%dx%d):", weight_cols, batch);
     print_mat(w_pre, batch, weight_cols);
