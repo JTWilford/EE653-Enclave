@@ -104,7 +104,7 @@ void ecall_nativeMatMul(float *w, int *dimW, float *inp, int *dimInp, float *out
     print_mat(inp_cpy, inp_rows, inp_cols);
 
     // Perform matrix multiplication
-    float *res = (float*) malloc(sizeof(float) * inp_cols * w_rows);
+    float *res = (float*) malloc(sizeof(float) * w_cols * inp_rows);
     matrix_mult(w, w_rows, w_cols, inp, inp_rows, inp_cols, out);
     printf("\n");
     printf("Res (%dx%d):", w_cols, inp_rows);
@@ -134,17 +134,17 @@ void ecall_precompute(float *weight, int *dim, int batch) {
     if (r != nullptr) {
         free(r);
     }
-    r = (float*) malloc(sizeof(float) * weight_cols * batch);
-    read_rand(r, sizeof(float) * weight_cols * batch);
-    printf("R (%dx%d):", batch, weight_cols);
-    print_mat(r, weight_cols, batch);
+    r = (float*) malloc(sizeof(float) * weight_rows * batch);
+    read_rand(r, sizeof(float) * weight_rows * batch);
+    printf("R (%dx%d):\n", weight_rows, batch);
+    print_mat(r, batch, weight_rows);
 
     // Perform matrix multiplication
     if (w_pre != nullptr) {
         free(w_pre);
     }
-    w_pre = (float*) malloc(sizeof(float) * batch * weight_cols);
-    matrix_mult(r, batch, weight_cols, weight_cpy, weight_rows, weight_cols, w_pre);
+    w_pre = (float*) malloc(sizeof(float) * weight_cols * batch);
+    matrix_mult(r, batch, weight_rows, weight_cpy, weight_rows, weight_cols, w_pre);
     printf("W_pre (%dx%d):", weight_cols, batch);
     print_mat(w_pre, batch, weight_cols);
 }
