@@ -66,17 +66,17 @@ def main(args):
     print("Native Times:\t[ %s ]" % (", ".join(str(f) for f in slow_times)))
     print("Speedups:\t[ %s ]" % (", ".join(str(f) for f in speedups)))
     print()
-    t_sum = 0
+    t_sum = 0.0
     for t in fast_times:
         t_sum += t
     fast_avg = t_sum / len(fast_times)
-    t_sum = 0
+    t_sum = 0.0
     for t in slow_times:
         t_sum += t
     slow_avg = t_sum / len(slow_times)
-    print("Average Fast Time:\t%d" % fast_avg)
-    print("Average Native Time:\t%d" % slow_avg)
-    print("Average Speedup:\t%d" % (slow_avg / fast_avg))
+    print("Average Fast Time:\t%s" % str(fast_avg))
+    print("Average Native Time:\t%s" % str(slow_avg))
+    print("Average Speedup:\t%s" % str(slow_avg / fast_avg))
 
     return 0
     
