@@ -56,6 +56,9 @@ def main(args):
         # print(y_expected)
 
         print("Total diffs:", abs(y_expected - y_recovered).sum())
+        print("Fast time: %s" % str(fast_time))
+        print("Native time: %s" % str(slow_time))
+        print("Speedup: %s" % str(slow_time / fast_time))
 
         fast_times.append(fast_time)
         slow_times.append(slow_time)
