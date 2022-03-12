@@ -47,10 +47,11 @@ void matrix_mult(float *a, int a_rows, int a_cols, float *b, int b_rows, int b_c
 }
 
 void matrix_add(float *a, int a_rows, int a_cols, float *b, float *out) {
+    printf("ADD\n");
     for (int i = 0; i < a_rows; i++) {
         for (int j = 0; j < a_cols; j++) {
             out[a_cols*i + j] = a[a_cols*i + j] + b[a_cols*i + j];
-            printf("(%d,%d) %f = %f + %f", i, j, out[a_cols*i + j], a[a_cols*i + j], b[a_cols*i + j]);
+            printf("\t(%d,%d) %f = %f + %f\n", i, j, out[a_cols*i + j], a[a_cols*i + j], b[a_cols*i + j]);
         }
     }
 }
@@ -175,7 +176,7 @@ void ecall_addNoise(float *inp, int *dim, float *out) {
 
     // Perform matrix addition
     float *res = (float*) malloc(sizeof(float) * inp_cols * inp_rows);
-    matrix_add(inp, inp_rows, inp_cols, r, out);
+    matrix_add(inp, inp_rows, inp_cols, r, res);
     printf("Res (%dx%d):\n", inp_rows, inp_cols);
     print_mat(res, inp_rows, inp_cols);
     memcpy(out, res, sizeof(float) * inp_cols * inp_rows);
@@ -196,7 +197,7 @@ void ecall_removeNoise(float *inp, int *dim, float *out) {
 
     // Perform matrix substraction
     float *res = (float*) malloc(sizeof(float) * inp_cols * inp_rows);
-    matrix_sub(inp, inp_rows, inp_cols, w_pre, out);
+    matrix_sub(inp, inp_rows, inp_cols, w_pre, res);
     printf("Res (%dx%d):", inp_rows, inp_cols);
     print_mat(res, inp_rows, inp_cols);
     memcpy(out, res, sizeof(float) * inp_cols * inp_rows);
