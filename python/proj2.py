@@ -8,8 +8,8 @@ def main(args):
     fast_times = []
     slow_times = []
     speedups = []
+    sgxutils = SGXUtils()
     for i in range(1, 6):
-        sgxutils = SGXUtils()
         print("============================")
         print("\tRun #%d" % i)
         print("============================")
