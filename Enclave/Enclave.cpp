@@ -50,6 +50,7 @@ void matrix_add(float *a, int a_rows, int a_cols, float *b, float *out) {
     for (int i = 0; i < a_rows; i++) {
         for (int j = 0; j < a_cols; j++) {
             out[a_cols*i + j] = a[a_cols*i + j] + b[a_cols*i + j];
+            printf("(%d,%d) %f = %f + %f", i, j, out[a_cols*i + j], a[a_cols*i + j], b[a_cols*i + j]);
         }
     }
 }
