@@ -37,11 +37,11 @@ void matrix_mult(float *a, int a_rows, int a_cols, float *b, int b_rows, int b_c
     printf("Dims: a=%dx%d, b=%dx%d, out=%dx%d\n", a_rows, a_cols, b_rows, b_cols, a_rows, b_cols);
     for (int i = 0; i < a_rows; i++) {
         for (int j = 0; j < b_cols; j++) {
-            out[a_cols*i + j] = 0.0f;
+            out[b_cols*i + j] = 0.0f;
             for (int k = 0; k < a_cols; k++) {
-                out[a_cols*i + j] += a[a_cols*i + k] * b[b_cols*k + j];
+                out[b_cols*i + j] += a[a_cols*i + k] * b[b_cols*k + j];
             }
-            printf("\n(%d, %d)[%d] = %f\n", i, j, a_cols*i + j, out[a_cols*i + j]);
+            printf("\t(%d, %d)[%d] = %f\n", i, j, b_cols*i + j, out[b_cols*i + j]);
         }
     }
 }
