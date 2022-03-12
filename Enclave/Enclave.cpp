@@ -99,20 +99,20 @@ void ecall_nativeMatMul(float *w, int *dimW, float *inp, int *dimInp, float *out
     int w_cols = dimW[1];
     float *w_cpy = (float*) malloc(sizeof(float) * w_cols * w_rows);
     memcpy(w_cpy, w, sizeof(float) * w_cols * w_rows);
-    printf("W_copy (%dx%d):", w_rows, w_cols);
+    printf("W_copy (%dx%d):\n", w_rows, w_cols);
     print_mat(w_cpy, w_rows, w_cols);
     int inp_rows = dimInp[0];
     int inp_cols = dimInp[1];
     float *inp_cpy = (float*) malloc(sizeof(float) * inp_cols * inp_rows);
     memcpy(inp_cpy, inp, sizeof(float) * inp_cols * inp_rows);
-    printf("Inp_copy (%dx%d):", inp_cols, inp_rows);
+    printf("Inp_copy (%dx%d):\n", inp_cols, inp_rows);
     print_mat(inp_cpy, inp_rows, inp_cols);
 
     // Perform matrix multiplication
     float *res = (float*) malloc(sizeof(float) * w_cols * inp_rows);
     matrix_mult(inp, inp_rows, inp_cols, w_cpy, w_rows, w_cols, out);
     printf("\n");
-    printf("Res (%dx%d):", inp_rows, w_cols);
+    printf("Res (%dx%d):\n", inp_rows, w_cols);
     print_mat(res, inp_rows, w_cols);
     // Copy the result into the output buffer
     memcpy(out, res, sizeof(float) * w_cols * inp_rows);
