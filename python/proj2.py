@@ -4,12 +4,12 @@ import time
 from python.sgxutils import SGXUtils
 
 def main(args):
-    sgxutils = SGXUtils()
 
     fast_times = []
     slow_times = []
     speedups = []
     for i in range(1, 6):
+        sgxutils = SGXUtils()
         print("============================")
         print("\tRun #%d" % i)
         print("============================")
