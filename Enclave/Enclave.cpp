@@ -120,7 +120,11 @@ void ecall_nativeMatMul(float *w, int *dimW, float *inp, int *dimInp, float *out
 // int *dim => 2-element array defining the size of weight
 // int batch => ???
 static float *r = nullptr;
+static int r_rows = 0;
+static int r_cols = 0;
 static float *w_pre = nullptr;
+static int w_pre_rows = 0;
+static int w_pre_cols = 0;
 void ecall_precompute(float *weight, int *dim, int batch) {
     printf("precompute\n");
     // Copy weight out of untrusted memory
@@ -135,6 +139,8 @@ void ecall_precompute(float *weight, int *dim, int batch) {
         free(r);
     }
     r = (float*) malloc(sizeof(float) * weight_rows * batch);
+    r_rows = batch;
+    r_cols = weight_rows;
     read_rand(r, sizeof(float) * weight_rows * batch);
     printf("R (%dx%d):\n", batch, weight_rows);
     print_mat(r, batch, weight_rows);
@@ -144,6 +150,8 @@ void ecall_precompute(float *weight, int *dim, int batch) {
         free(w_pre);
     }
     w_pre = (float*) malloc(sizeof(float) * weight_cols * batch);
+    w_pre_rows = batch;
+    w_pre_cols = weight_cols;
     matrix_mult(r, batch, weight_rows, weight_cpy, weight_rows, weight_cols, w_pre);
     printf("W_pre (%dx%d):\n", batch, weight_cols);
     print_mat(w_pre, batch, weight_cols);
@@ -161,8 +169,8 @@ void ecall_addNoise(float *inp, int *dim, float *out) {
     printf("Inp_copy (%dx%d):\n", inp_rows, inp_cols);
     print_mat(inp_cpy, inp_rows, inp_cols);
     
-    printf("R (%dx%d):\n", batch, weight_rows);
-    print_mat(r, batch, weight_rows);
+    printf("R (%dx%d):\n", r_rows, r_cols);
+    print_mat(r, r_rows, r_cols);
 
     // Perform matrix addition
     float *res = (float*) malloc(sizeof(float) * inp_cols * inp_rows);
