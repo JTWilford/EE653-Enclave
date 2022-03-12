@@ -14,9 +14,9 @@ def main(args):
     x_t = torch.transpose(x, 0, 1)
 
     print("Weight (%d, %d):" % (w.size(0), w.size(1)))
-    print(w)
+    # print(w)
     print("X (%d, %d):" % (x.size(0), x.size(1)))
-    print(x)
+    # print(x)
 
 
     # given the weight; precompute w * r
@@ -24,25 +24,25 @@ def main(args):
 
     # x_blinded = x + r
     x_blinded = sgxutils.addNoise(x)
-    print("x_blinded:")
-    print(x_blinded)
+    # print("x_blinded:")
+    # print(x_blinded)
 
     # y_blinded = w * x_blinded
     y_blinded = l(x_blinded)
-    print("y_blinded:")
-    print(y_blinded)
+    # print("y_blinded:")
+    # print(y_blinded)
 
     # y_recovered = y_blinded - w * r
     y_recovered = sgxutils.removeNoise(y_blinded)
-    print("y_recovered:")
-    print(y_recovered)
+    # print("y_recovered:")
+    # print(y_recovered)
     s = sgxutils.nativeMatMul(w, x)
-    print("s")
-    print(s)
+    # print("s")
+    # print(s)
 
     y_expected = l(x)
-    print("y_expected:")
-    print(y_expected)
+    # print("y_expected:")
+    # print(y_expected)
 
     print("Total diffs:", abs(y_expected - y_recovered).sum())
 
