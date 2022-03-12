@@ -17,9 +17,9 @@ def main(args):
         x = torch.randn(args.batch, args.in_features).cuda()
         w = l.weight
 
-        print("Weight (%d, %d):" % (w.size(0), w.size(1)))
+        # print("Weight (%d, %d):" % (w.size(0), w.size(1)))
         # print(w)
-        print("X (%d, %d):" % (x.size(0), x.size(1)))
+        # print("X (%d, %d):" % (x.size(0), x.size(1)))
         # print(x)
 
 
