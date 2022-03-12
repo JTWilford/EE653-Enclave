@@ -39,9 +39,9 @@ void matrix_mult(float *a, int a_rows, int a_cols, float *b, int b_rows, int b_c
         for (int j = 0; j < b_cols; j++) {
             out[a_cols*i + j] = 0.0f;
             for (int k = 0; k < a_cols; k++) {
-                // printf("%d = %d * %d\n", i * inp_cols + j, i * w_cols + k, k * inp_cols + j);
                 out[a_cols*i + j] += a[a_cols*i + k] * b[b_cols*k + j];
             }
+            printf("(%d, %d) = %f * %d\n", i, j, out[a_cols*i + j]);
         }
     }
 }
