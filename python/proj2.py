@@ -9,13 +9,13 @@ def main(args):
 
     l = torch.nn.Linear(args.in_features, args.out_features, bias=False).cuda()
     x = torch.randn(args.batch, args.in_features).cuda()
-    w = l.weight;
+    w = l.weight
     w_t = torch.transpose(l.weight, 0, 1)
     x_t = torch.transpose(x, 0, 1)
 
-    print("Weights:")
+    print("Weight (%d, %d):" % (w.size(0), w.size(1)))
     print(w)
-    print("X:")
+    print("X (%d, %d):" % (x.size(0), x.size(1)))
     print(x)
 
 
