@@ -62,9 +62,9 @@ def main(args):
         speedups.append(slow_time / fast_time)
 
     print("----------------------")
-    print("Fast Times:\t%d" % (fast_times))
-    print("Native Times:\t%d" % (slow_times))
-    print("Speedups:\t%d" % (speedups))
+    print("Fast Times:\t[ %s ]" % (", ".join(fast_times)))
+    print("Native Times:\t[ %s ]" % (", ".join(slow_times)))
+    print("Speedups:\t[ %s ]" % ", ".join((speedups)))
     print()
     t_sum = 0
     for t in fast_times:

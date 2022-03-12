@@ -35,7 +35,7 @@ void print_mat(float* a, int a_rows, int a_cols) {
 
 // Row Major
 void matrix_mult(float *a, int a_rows, int a_cols, float *b, int b_rows, int b_cols, float *out) {
-    printf("Dims: a=%dx%d, b=%dx%d, out=%dx%d\n", a_rows, a_cols, b_rows, b_cols, a_rows, b_cols);
+    //printf("Dims: a=%dx%d, b=%dx%d, out=%dx%d\n", a_rows, a_cols, b_rows, b_cols, a_rows, b_cols);
     for (int i = 0; i < a_rows; i++) {
         for (int j = 0; j < b_cols; j++) {
             out[b_cols*i + j] = 0.0f;
@@ -93,27 +93,27 @@ int ecall_compute_secrete_operation(int *inp, int size) {
 // int *dimInp => 2-element array defining the size of inp
 // float *out => Output buffer
 void ecall_nativeMatMul(float *w, int *dimW, float *inp, int *dimInp, float *out) {
-    printf("nativeMatMul\n");
+    //printf("nativeMatMul\n");
     // Copy the W array out of untrusted memory
     int w_rows = dimW[0];
     int w_cols = dimW[1];
     float *w_cpy = (float*) malloc(sizeof(float) * w_cols * w_rows);
     memcpy(w_cpy, w, sizeof(float) * w_cols * w_rows);
-    printf("W_copy (%dx%d):\n", w_rows, w_cols);
+    //printf("W_copy (%dx%d):\n", w_rows, w_cols);
     print_mat(w_cpy, w_rows, w_cols);
     int inp_rows = dimInp[0];
     int inp_cols = dimInp[1];
     float *inp_cpy = (float*) malloc(sizeof(float) * inp_cols * inp_rows);
     memcpy(inp_cpy, inp, sizeof(float) * inp_cols * inp_rows);
-    printf("Inp_copy (%dx%d):\n", inp_cols, inp_rows);
+    //printf("Inp_copy (%dx%d):\n", inp_cols, inp_rows);
     print_mat(inp_cpy, inp_rows, inp_cols);
 
     // Perform matrix multiplication
     float *res = (float*) malloc(sizeof(float) * w_cols * inp_rows);
     matrix_mult(inp, inp_rows, inp_cols, w_cpy, w_rows, w_cols, out);
-    printf("\n");
-    printf("Res (%dx%d):\n", inp_rows, w_cols);
-    print_mat(res, inp_rows, w_cols);
+    //printf("\n");
+    //printf("Res (%dx%d):\n", inp_rows, w_cols);
+    //print_mat(res, inp_rows, w_cols);
     // Copy the result into the output buffer
     memcpy(out, res, sizeof(float) * w_cols * inp_rows);
     free(res);
@@ -131,14 +131,14 @@ static float *w_pre = nullptr;
 static int w_pre_rows = 0;
 static int w_pre_cols = 0;
 void ecall_precompute(float *weight, int *dim, int batch) {
-    printf("precompute\n");
+    //printf("precompute\n");
     // Copy weight out of untrusted memory
     int weight_rows = dim[0];
     int weight_cols = dim[1];
     float *weight_cpy = (float*) malloc(sizeof(float) * weight_cols * weight_rows);
     memcpy(weight_cpy, weight, sizeof(float) * weight_rows * weight_cols);
-    printf("Weight (%dx%d):\n", weight_rows, weight_cols);
-    print_mat(weight_cpy, weight_rows, weight_cols);
+    //printf("Weight (%dx%d):\n", weight_rows, weight_cols);
+    //print_mat(weight_cpy, weight_rows, weight_cols);
     // Generate random numbers in r
     if (r != nullptr) {
         free(r);
@@ -147,8 +147,8 @@ void ecall_precompute(float *weight, int *dim, int batch) {
     r_rows = batch;
     r_cols = weight_rows;
     read_rand(r, sizeof(float) * weight_rows * batch);
-    printf("R (%dx%d):\n", batch, weight_rows);
-    print_mat(r, batch, weight_rows);
+    //printf("R (%dx%d):\n", batch, weight_rows);
+    //print_mat(r, batch, weight_rows);
 
     // Perform matrix multiplication
     if (w_pre != nullptr) {
@@ -158,30 +158,30 @@ void ecall_precompute(float *weight, int *dim, int batch) {
     w_pre_rows = batch;
     w_pre_cols = weight_cols;
     matrix_mult(r, batch, weight_rows, weight_cpy, weight_rows, weight_cols, w_pre);
-    printf("W_pre (%dx%d):\n", batch, weight_cols);
-    print_mat(w_pre, batch, weight_cols);
+    //printf("W_pre (%dx%d):\n", batch, weight_cols);
+    //print_mat(w_pre, batch, weight_cols);
 }
 
 // Computes inp + r, where r is a random buffer that was populated
 // by ecall_precompute
 void ecall_addNoise(float *inp, int *dim, float *out) {
-    printf("addNoise\n");
+    //printf("addNoise\n");
     // Copy input out of untrusted memory
     int inp_rows = dim[0];
     int inp_cols = dim[1];
     float *inp_cpy = (float*) malloc(sizeof(float) * inp_cols * inp_rows);
     memcpy(inp_cpy, inp, sizeof(float) * inp_cols * inp_rows);
-    printf("Inp_copy (%dx%d):\n", inp_rows, inp_cols);
-    print_mat(inp_cpy, inp_rows, inp_cols);
+    //printf("Inp_copy (%dx%d):\n", inp_rows, inp_cols);
+    //print_mat(inp_cpy, inp_rows, inp_cols);
     
-    printf("R (%dx%d):\n", r_rows, r_cols);
-    print_mat(r, r_rows, r_cols);
+    //printf("R (%dx%d):\n", r_rows, r_cols);
+    //print_mat(r, r_rows, r_cols);
 
     // Perform matrix addition
     float *res = (float*) malloc(sizeof(float) * inp_cols * inp_rows);
     matrix_add(inp, inp_rows, inp_cols, r, res);
-    printf("Res (%dx%d):\n", inp_rows, inp_cols);
-    print_mat(res, inp_rows, inp_cols);
+    //printf("Res (%dx%d):\n", inp_rows, inp_cols);
+    //print_mat(res, inp_rows, inp_cols);
     memcpy(out, res, sizeof(float) * inp_cols * inp_rows);
     free(res);
 }
@@ -189,23 +189,23 @@ void ecall_addNoise(float *inp, int *dim, float *out) {
 // Computes inp - (r * w). r * w has been precomputed by ecall_precompute
 
 void ecall_removeNoise(float *inp, int *dim, float *out) {
-    printf("removeNoise\n");
+    //printf("removeNoise\n");
     // Copy input out of untrusted memory
     int inp_rows = dim[0];
     int inp_cols = dim[1];
     float *inp_cpy = (float*) malloc(sizeof(float) * inp_cols * inp_rows);
     memcpy(inp_cpy, inp, sizeof(float) * inp_cols * inp_rows);
-    printf("Inp_copy (%dx%d):\n", inp_rows, inp_cols);
-    print_mat(inp_cpy, inp_rows, inp_cols);
+    //printf("Inp_copy (%dx%d):\n", inp_rows, inp_cols);
+    //print_mat(inp_cpy, inp_rows, inp_cols);
 
-    printf("W_pre (%dx%d):\n", w_pre_rows, w_pre_cols);
-    print_mat(w_pre, w_pre_rows, w_pre_cols);
+    //printf("W_pre (%dx%d):\n", w_pre_rows, w_pre_cols);
+    //print_mat(w_pre, w_pre_rows, w_pre_cols);
 
     // Perform matrix substraction
     float *res = (float*) malloc(sizeof(float) * inp_cols * inp_rows);
     matrix_sub(inp, inp_rows, inp_cols, w_pre, res);
-    printf("Res (%dx%d):\n", inp_rows, inp_cols);
-    print_mat(res, inp_rows, inp_cols);
+    //printf("Res (%dx%d):\n", inp_rows, inp_cols);
+    //print_mat(res, inp_rows, inp_cols);
     memcpy(out, res, sizeof(float) * inp_cols * inp_rows);
     free(res);
 }
