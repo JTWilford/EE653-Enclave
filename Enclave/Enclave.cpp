@@ -153,19 +153,21 @@ void ecall_precompute(float *weight, int *dim, int batch) {
 // by ecall_precompute
 void ecall_addNoise(float *inp, int *dim, float *out) {
     printf("addNoise\n");
-    printf("%x", dim);
     // Copy input out of untrusted memory
     int inp_rows = dim[0];
     int inp_cols = dim[1];
     float *inp_cpy = (float*) malloc(sizeof(float) * inp_cols * inp_rows);
     memcpy(inp_cpy, inp, sizeof(float) * inp_cols * inp_rows);
-    printf("Inp_copy (%dx%d):", inp_rows, inp_cols);
+    printf("Inp_copy (%dx%d):\n", inp_rows, inp_cols);
     print_mat(inp_cpy, inp_rows, inp_cols);
+    
+    printf("R (%dx%d):\n", batch, weight_rows);
+    print_mat(r, batch, weight_rows);
 
     // Perform matrix addition
     float *res = (float*) malloc(sizeof(float) * inp_cols * inp_rows);
     matrix_add(inp, inp_rows, inp_cols, r, out);
-    printf("Res (%dx%d):", inp_rows, inp_cols);
+    printf("Res (%dx%d):\n", inp_rows, inp_cols);
     print_mat(res, inp_rows, inp_cols);
     memcpy(out, res, sizeof(float) * inp_cols * inp_rows);
     free(res);
