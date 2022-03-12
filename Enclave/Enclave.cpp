@@ -24,11 +24,12 @@ void read_rand(float *r, int totalSize) {
 }
 
 void print_mat(float* a, int a_rows, int a_cols) {
+    return;
     for (int i = 0; i < a_rows; i++) {
         for (int j = 0; j < a_cols; j++) {
             printf("%f, ", a[a_cols*i + j]);
         }
-        printf("\n");
+        // printf("\n");
     }
 }
 
@@ -41,26 +42,26 @@ void matrix_mult(float *a, int a_rows, int a_cols, float *b, int b_rows, int b_c
             for (int k = 0; k < a_cols; k++) {
                 out[b_cols*i + j] += a[a_cols*i + k] * b[b_cols*k + j];
             }
-            printf("\t(%d, %d)[%d] = %f\n", i, j, b_cols*i + j, out[b_cols*i + j]);
+            // printf("\t(%d, %d)[%d] = %f\n", i, j, b_cols*i + j, out[b_cols*i + j]);
         }
     }
 }
 
 void matrix_add(float *a, int a_rows, int a_cols, float *b, float *out) {
-    printf("ADD\n");
+    // printf("ADD\n");
     for (int i = 0; i < a_rows; i++) {
         for (int j = 0; j < a_cols; j++) {
             out[a_cols*i + j] = a[a_cols*i + j] + b[a_cols*i + j];
-            printf("\t(%d,%d) %f = %f + %f\n", i, j, out[a_cols*i + j], a[a_cols*i + j], b[a_cols*i + j]);
+            // printf("\t(%d,%d) %f = %f + %f\n", i, j, out[a_cols*i + j], a[a_cols*i + j], b[a_cols*i + j]);
         }
     }
 }
 void matrix_sub(float *a, int a_rows, int a_cols, float *b, float *out) {
-    printf("SUB\n");
+    // printf("SUB\n");
     for (int i = 0; i < a_rows; i++) {
         for (int j = 0; j < a_cols; j++) {
             out[a_cols*i + j] = a[a_cols*i + j] - b[a_cols*i + j];
-            printf("\t(%d,%d) %f = %f - %f\n", i, j, out[a_cols*i + j], a[a_cols*i + j], b[a_cols*i + j]);
+            // printf("\t(%d,%d) %f = %f - %f\n", i, j, out[a_cols*i + j], a[a_cols*i + j], b[a_cols*i + j]);
         }
     }
 }
