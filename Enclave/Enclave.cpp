@@ -41,7 +41,7 @@ void matrix_mult(float *a, int a_rows, int a_cols, float *b, int b_rows, int b_c
             for (int k = 0; k < a_cols; k++) {
                 out[a_cols*i + j] += a[a_cols*i + k] * b[b_cols*k + j];
             }
-            printf("(%d, %d) = %f\n", i, j, out[a_cols*i + j]);
+            printf("\n(%d, %d)[%d] = %f\n", i, j, a_cols*i + j, out[a_cols*i + j]);
         }
     }
 }
