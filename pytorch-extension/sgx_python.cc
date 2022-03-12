@@ -64,7 +64,8 @@ torch::Tensor nativeMatMul(torch::Tensor w, torch::Tensor inp) {
 
     auto res = torch::ones({inp.size(0), w.size(1)});
 
-    std::cout << "Tensor: " << std::endl << res << std::endl;
+    std::cout << "W: " << std::endl << w << std::endl;
+    std::cout << "X: " << std::endl << inp << std::endl;
 
     int* dimW = new int[2];
     dimW[0] = w.size(0);
